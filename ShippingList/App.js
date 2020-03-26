@@ -1,114 +1,64 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React, {useState} from 'react';
+import {View, Text, Image, StyleSheet, FlatList, Alert} from 'react-native';
+import uuid from 'uuidv4';
+import Header from "./components/Header";
+import AddItem from "./components/AddItem";
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
 
-const App: () => React$Node = () => {
+  const [items, setItems] = useState([
+
+    {    id: uuid(), text: 'Milk'},
+    {    id: uuid(), text: 'Egg'},
+    {    id: uuid(), text: 'Bread'},
+    {    id: uuid(), text: 'Jam'}
+
+  ]);
+
+  const deleteItem = (id) => {
+    setItems(prevItem => {
+      return prevItem.filter(item => item.id !== id)
+    })
+  };
+  const addItem = (text) =>{
+    if(!text){
+          Alert.alert('Error', 'Please enter an item',
+              {text: 'Ok'})
+    }else{
+      setItems(prevItem => {
+        return [{id: uuid(), text },...prevItem]
+      })
+    }
+
+  };
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      <View style={styles.container}>
+      <Header title='Shopping List'/>
+      <AddItem addItem={ {addItem}}/>
+      <FlatList renderItem={({item}) =>
+          <ListItem item={item}  deleteItem = {deleteItem}/>} data={items}/>
+      <Text style={styles.text}> Hello:
+          <Image source ={{uri: 'https://randomuser.me/api/portaits/men/1.jpg'}} style={styles.img}/>
+      </Text>
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container:{
+    flex: 1,
+    padding: 60
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  text:{
+    color: 'darkblue',
+    fontSize: 30
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+  img:{
+    width: 100,
+    height: 100,
+    borderRadius: 100 / 2
+  }
 
+});
 export default App;
